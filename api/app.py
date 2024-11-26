@@ -88,11 +88,18 @@ def generate_summary(data):
     return summary, classification
 
 # Função para criar o PDF
+def create_pdf(user_data, summary, classification):
+    """Cria um PDF a partir dos dados do usuário, resumo e classificação."""
+    pdf_path = "curriculo_gerado.pdf"
+    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
+    styles = getSampleStyleSheet()
     elements = []
 
     elements.append(Paragraph(f" {user_data.get('name', 'Nome não informado')}", styles["Title"]))
     elements.append(Spacer(1, 12))
     elements.append(Paragraph(f"<b>Email:</b> {user_data.get('contact', 'Contato não informado')}", styles["Normal"]))
+    elements.append(Spacer(1, 12))
+    elements.append(Paragraph(f"<b>Telefone:</b> {user_data.get('phone', 'Telefone não informado')}", styles["Normal"]))  # Novo campo de telefone
     elements.append(Spacer(1, 12))
 
     elements.append(Paragraph("<b>Resumo:</b>", styles["Heading2"]))

@@ -17,6 +17,7 @@ interface Experience {
 interface FormData {
   name: string;
   contact: string;
+  phone: string; // Novo campo de telefone
   experience: Experience[];
   skills: string;
 }
@@ -25,6 +26,7 @@ function App() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     contact: "",
+    phone: "", // Inicialização do novo campo
     experience: [
       {
         position: "",
@@ -129,6 +131,18 @@ function App() {
                 onChange={handleChange}
                 required
                 placeholder="Seu email"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone">Telefone:</Label>
+              <Input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                placeholder="Seu telefone"
                 disabled={loading}
               />
             </div>
