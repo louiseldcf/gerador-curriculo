@@ -96,15 +96,15 @@ function App() {
   };
 
   return (
-    <div className="App p-6 bg-gray-100 min-h-screen">
+    <div className="App p-6 bg-green-300 min-h-screen">
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
           <div className="text-white text-xl">Gerando currículo...</div>
         </div>
       )}
       <Card className="max-w-3xl mx-auto">
-        <CardHeader>
-          <h1 className="text-2xl font-bold">Gerador de Currículo</h1>
+        <CardHeader className="flex justify-center">
+          <h1 className="text-5xl text-center text-green-300 font-bold">FastFox</h1>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">

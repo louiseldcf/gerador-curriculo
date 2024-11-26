@@ -54,6 +54,18 @@ if faiss_index.ntotal == 0:
     ]
     add_to_index(initial_documents)
 
+# Função para classificar a experiência
+def classify_experience(years):
+    if years < 2:
+        return "Júnior"
+    elif 2 <= years < 5:
+        return "Pleno"
+    else:
+        return "Sênior"
+
+# Configuração do pipeline de resumo
+summary_pipeline = pipeline("summarization")
+
 # Função para criar o resumo
 def generate_summary(data):
     """Cria um resumo sintetizado a partir das informações fornecidas."""
@@ -64,18 +76,18 @@ def generate_summary(data):
     # Combinar habilidades
     skills = data.get('skills', '')
 
-    # Criar o resumo formatado
-    summary = f"Profissional com {experience_years} anos de experiência em desenvolvimento de software, " \
-              f"especializado em {skills.lower()}."
+    # Classificar a experiência
+    classification = classify_experience(experience_years)
 
-    return summary
+    # Criar o texto de entrada para o modelo de resumo
+    input_text = f"Experiência: {experience_years} anos. Habilidades: {skills}."
+
+    # Gerar o resumo usando o modelo de IA
+    summary = summary_pipeline(input_text, max_length=50, min_length=25, do_sample=False)[0]['summary_text']
+
+    return summary, classification
 
 # Função para criar o PDF
-def create_pdf(user_data, summary, classification):
-    """Cria um PDF com os dados do usuário, o resumo e a classificação."""
-    pdf_path = "curriculo_gerado.pdf"
-    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
-    styles = getSampleStyleSheet()
     elements = []
 
     elements.append(Paragraph(f" {user_data.get('name', 'Nome não informado')}", styles["Title"]))
@@ -102,11 +114,9 @@ def process_cv():
         user_data = request.json
         logging.info("Recebendo dados do usuário...")
 
-        # Gerar resumo
-        summary = generate_summary(user_data)
+        # Gerar resumo e classificação
+        summary, classification = generate_summary(user_data)
         logging.info(f"Resumo gerado: {summary}")
-
-        classification = "Pleno"
         logging.info(f"Classificação gerada: {classification}")
 
         # Gerar PDF
