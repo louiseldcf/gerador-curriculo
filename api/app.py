@@ -1,5 +1,6 @@
 import logging
 from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 from transformers import pipeline
 import faiss
@@ -11,6 +12,7 @@ import numpy as np
 
 # Configuração do Flask
 app = Flask(__name__)
+CORS(app)  # Adicione esta linha para habilitar o CORS
 
 # Configuração do Modelo de Embeddings
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -57,10 +59,10 @@ def generate_summary(data):
     """Cria um resumo sintetizado a partir das informações fornecidas."""
     # Calcular os anos de experiência
     experience_years = sum(
-        exp['end_year'] - exp['start_year'] for exp in data.get('experience', []) if exp.get('start_year') and exp.get('end_year')
+        int(exp['end_year']) - int(exp['start_year']) for exp in data.get('experience', []) if exp.get('start_year') and exp.get('end_year')
     )
     # Combinar habilidades
-    skills = ", ".join(data.get('skills', []))
+    skills = data.get('skills', '')
 
     # Criar o resumo formatado
     summary = f"Profissional com {experience_years} anos de experiência em desenvolvimento de software, " \
@@ -104,8 +106,7 @@ def process_cv():
         summary = generate_summary(user_data)
         logging.info(f"Resumo gerado: {summary}")
 
-        # Classificar o candidato com base no resumo
-        classification = "Pleno"  # Adicione sua lógica de classificação aqui
+        classification = "Pleno"
         logging.info(f"Classificação gerada: {classification}")
 
         # Gerar PDF
